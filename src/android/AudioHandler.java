@@ -118,7 +118,11 @@ public class AudioHandler extends CordovaPlugin {
             promptForRecord();
         }
         else if (action.equals("stopRecordingAudio")) {
-            this.stopRecordingAudio(args.getString(0), true);
+            String audio = this.stopRecordingAudio(args.getString(0), true);
+            JSONObject entry = new JSONObject();
+            entry.put("status", 4);
+            entry.put("audio", audio);
+            release(args.getString(0));
         }
         else if (action.equals("pauseRecordingAudio")) {
             this.stopRecordingAudio(args.getString(0), false);
@@ -285,6 +289,13 @@ public class AudioHandler extends CordovaPlugin {
     public void startRecordingAudio(String id, String file) {
         AudioPlayer audio = getOrCreatePlayer(id, file);
         audio.startRecording(file);
+        final String fileF = file;
+        final AudioPlayer audioF = audio;
+        this.cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                audioF.startRecording(fileF);
+            }
+        });
     }
 
     /**
@@ -294,9 +305,15 @@ public class AudioHandler extends CordovaPlugin {
      */
     public void stopRecordingAudio(String id, boolean stop) {
         AudioPlayer audio = this.players.get(id);
+        String audioData = null;
         if (audio != null) {
-            audio.stopRecording(stop);
+            try {
+                audioData = audio.stopRecording(stop);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
+        return audioData;
     }
 
     /**

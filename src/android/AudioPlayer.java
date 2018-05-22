@@ -85,7 +85,8 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
     private String audioFile = null;        // File name to play or record to
     private float duration = -1;            // Duration of audio
 
-    private MediaRecorder recorder = null;  // Audio recording object
+    private ExtAudioRecorder recorder = null;
+    // private MediaRecorder recorder = null;  // Audio recording object
     private LinkedList<String> tempFiles = null; // Temporary recording file name
     private String tempFile = null;
 
@@ -104,6 +105,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
         this.id = id;
         this.audioFile = file;
         this.tempFiles = new LinkedList<String>();
+        this.recorder = new ExtAudioRecorder(true, 1, 8000, 16, 2);
     }
 
     private String generateTempFile() {
@@ -149,10 +151,11 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
             break;
         case NONE:
             this.audioFile = file;
-            this.recorder = new MediaRecorder();
-            this.recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            this.recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS); // RAW_AMR);
-            this.recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC); //AMR_NB);
+            /*            this.recorder = new MediaRecorder();
+                          this.recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                          this.recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS); // RAW_AMR);
+                          this.recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC); //AMR_NB);
+                          */
             this.tempFile = generateTempFile();
             this.recorder.setOutputFile(this.tempFile);
             try {
@@ -257,11 +260,12 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
     /**
      * Stop/Pause recording and save to the file specified when recording started.
      */
-    public void stopRecording(boolean stop) {
+    public String stopRecording(boolean stop) {
+        String audio = null;
         if (this.recorder != null) {
             try{
                 if (this.state == STATE.MEDIA_RUNNING) {
-                    this.recorder.stop();
+                    audio = this.recorder.stop();
                 }
                 this.recorder.reset();
                 if (!this.tempFiles.contains(this.tempFile)) {
@@ -280,6 +284,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
                 e.printStackTrace();
             }
         }
+        return audio;
     }
 
     /**

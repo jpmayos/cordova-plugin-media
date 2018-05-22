@@ -69,60 +69,6 @@ Media.get = function(id) {
     return mediaObjects[id];
 };
 
-/**
- * Start or resume playing audio file.
- */
-Media.prototype.play = function(options) {
-    exec(null, null, "Media", "startPlayingAudio", [this.id, this.src, options]);
-};
-
-/**
- * Stop playing audio file.
- */
-Media.prototype.stop = function() {
-    var me = this;
-    exec(function() {
-        me._position = 0;
-    }, this.errorCallback, "Media", "stopPlayingAudio", [this.id]);
-};
-
-/**
- * Seek or jump to a new time in the track..
- */
-Media.prototype.seekTo = function(milliseconds) {
-    var me = this;
-    exec(function(p) {
-        me._position = p;
-    }, this.errorCallback, "Media", "seekToAudio", [this.id, milliseconds]);
-};
-
-/**
- * Pause playing audio file.
- */
-Media.prototype.pause = function() {
-    exec(null, this.errorCallback, "Media", "pausePlayingAudio", [this.id]);
-};
-
-/**
- * Get duration of an audio file.
- * The duration is only set for audio that is playing, paused or stopped.
- *
- * @return      duration or -1 if not known.
- */
-Media.prototype.getDuration = function() {
-    return this._duration;
-};
-
-/**
- * Get position of audio.
- */
-Media.prototype.getCurrentPosition = function(success, fail) {
-    var me = this;
-    exec(function(p) {
-        me._position = p;
-        success(p);
-    }, fail, "Media", "getCurrentPositionAudio", [this.id]);
-};
 
 /**
  * Start recording audio file.
@@ -139,52 +85,12 @@ Media.prototype.stopRecord = function() {
 };
 
 /**
- * Pause recording audio file.
- */
-Media.prototype.pauseRecord = function() {
-    exec(null, this.errorCallback, "Media", "pauseRecordingAudio", [this.id]);
-};
-
-/**
-* Resume recording audio file.
-*/
-Media.prototype.resumeRecord = function() {
-    exec(null, this.errorCallback, "Media", "resumeRecordingAudio", [this.id]);
-};
-
-/**
  * Release the resources.
  */
 Media.prototype.release = function() {
     exec(null, this.errorCallback, "Media", "release", [this.id]);
 };
 
-/**
- * Adjust the volume.
- */
-Media.prototype.setVolume = function(volume) {
-    exec(null, null, "Media", "setVolume", [this.id, volume]);
-};
-
-/**
- * Adjust the playback rate.
- */
-Media.prototype.setRate = function(rate) {
-    if (cordova.platformId === 'ios'){
-        exec(null, null, "Media", "setRate", [this.id, rate]);
-    } else {
-        console.warn('media.setRate method is currently not supported for', cordova.platformId, 'platform.');
-    }
-};
-
-/**
- * Get amplitude of audio.
- */
-Media.prototype.getCurrentAmplitude = function(success, fail) {
-    exec(function(p) {
-        success(p);
-    }, fail, "Media", "getCurrentAmplitudeAudio", [this.id]);
-};
 
 /**
  * Audio has status update.
