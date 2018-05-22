@@ -81,7 +81,7 @@ Media.prototype.startRecord = function() {
  * Stop recording audio file.
  */
 Media.prototype.stopRecord = function() {
-    exec(null, this.errorCallback, "Media", "stopRecordingAudio", [this.id]);
+    exec(this.successCallback, this.errorCallback, "Media", "stopRecordingAudio", [this.id]);
 };
 
 /**
