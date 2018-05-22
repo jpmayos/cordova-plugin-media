@@ -229,7 +229,7 @@ public class ExtAudioRecorder {
         if (this.state == State.RECORDING) {
             stop();
         } else {
-            if (((this.state == State.READY ? 1 : 0) & this.rUncompressed) != 0) {
+            if (((this.state == State.READY ? true : false) & this.rUncompressed)) {
                 try {
                     this.baos.close();
                 } catch (IOException e) {

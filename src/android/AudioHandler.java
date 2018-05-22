@@ -302,8 +302,9 @@ public class AudioHandler extends CordovaPlugin {
      * Stop/Pause recording and save to the file specified when recording started.
      * @param id				The id of the audio player
      * @param stop      If true stop recording, if false pause recording
+     * @return          Audio data in Base64
      */
-    public void stopRecordingAudio(String id, boolean stop) {
+    public String stopRecordingAudio(String id, boolean stop) {
         AudioPlayer audio = this.players.get(id);
         String audioData = null;
         if (audio != null) {

@@ -165,9 +165,7 @@ public class AudioPlayer implements OnCompletionListener, OnPreparedListener, On
                 return;
             } catch (IllegalStateException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            } 
 
             sendErrorStatus(MEDIA_ERR_ABORTED);
             break;
